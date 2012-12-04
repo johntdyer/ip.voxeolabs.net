@@ -7,6 +7,7 @@ get '/' do
   @allowed_hosts = ENV["ALLOWED_HOSTS"].split(",") rescue []
   @referer = request.env["HTTP_REFERER"].match(/http(?:s)?:\/\/(.*?)\/(.*?)/) rescue []
   return 403 unless @allowed_hosts.include?(@referer[1]) || Sinatra::Application.environment.to_s == 'development'
+  response['Cache-Control'] = "max-age=0"
 
   content_type :json
   @data = JSON.dump({ip: request.ip})
